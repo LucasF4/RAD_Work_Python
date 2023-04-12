@@ -8,13 +8,37 @@ cursor = banco.cursor()
 # ---------------------------- COMANDO PARA DELETAR TABELA ---------------------------
 #cursor.execute("DROP TABLE pessoas")
 # ---------------------------- COMANDO DE CRIAÇÃO DA TABELA PESSOAS ---------------------------
-#cursor.execute("CREATE TABLE pessoas (cpf integer, primeiro_nome text, nome_do_meio text, sobrenome text, idade integer, conta text) ")
+#cursor.execute("CREATE TABLE pessoas (cpf text, primeiro_nome text, nome_do_meio text, sobrenome text, idade integer, conta text) ")
 # ---------------------------- COMANDO DE CRIAÇÃO DA TABELA CONTA ---------------------------
 #cursor.execute("CREATE TABLE conta (agencia integer, numero integer, saldo text, gerente text, titular text)")
 # ---------------------------- COMANDO CRIAÇÃO COLUNA CONTA FORMATO DE TEXTO ---------------------------
 #cursor.execute("ALTER TABLE pessoas ADD COLUMN conta text")
 
 #banco.commit()
+try:
+
+    numPessoas = cursor.execute("SELECT COUNT(*) FROM pessoas")
+    objPessoas = numPessoas.fetchone()
+    print(objPessoas[0])
+    if objPessoas[0] == 0:
+        nomes = open('nomes.txt','r')
+        entrada = nomes.readlines()
+        #saida = entrada.replace(' ', ',')
+        #newNomes = open('nomes2.txt', 'w')
+        #newNomes.write(saida)
+        for i in entrada:
+                cursor.execute("INSERT INTO pessoas VALUES ('" + i.split()[0] + "', '" + i.split()[1] + "', '" + i.split()[2] + "', '" + i.split()[3] + "', " + i.split()[4] + ", '" + i.split()[5] + "')")
+            
+                print(i.split()[0] + ' ' + i.split()[1] + ' ' + i.split()[2] + ' ' + i.split()[3] + ' ' + i.split()[4] + ' ' + i.split()[5])
+                banco.commit()
+
+        nomes.close()
+        #newNomes.close()
+
+
+except NameError as error:
+    print("Ocorreu um erro: " + NameError)
+
 
 locale.setlocale(locale.LC_ALL, 'Portuguese')
 
@@ -52,7 +76,7 @@ while a == 1:
             idade = str(input("Idade: "))
             conta = str(input("Conta: "))
             try:
-                cursor.execute("INSERT INTO pessoas VALUES ("+cpf+", '"+primeiro+"', '"+segundo+"', '"+sobrenome+"', "+idade+", '"+conta+"')")
+                cursor.execute("INSERT INTO pessoas VALUES ('"+cpf+"', '"+primeiro+"', '"+segundo+"', '"+sobrenome+"', "+idade+", '"+conta+"')")
                 print("Inserido")
                 banco.commit()
             except:
@@ -91,7 +115,7 @@ while a == 1:
                 print("Usuário Deletado com sucesso.")
 
     if selecionado == '2':
-        arquivo = open("pessoas.txt", "r")
+        arquivo = open("nomes.txt", "r")
         lista = arquivo.readlines()
         
         for l in lista:
