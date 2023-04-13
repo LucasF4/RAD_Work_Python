@@ -13,8 +13,10 @@ cursor = banco.cursor()
 # ---------------------------- COMANDO DE CRIAÇÃO DA TABELA CONTA ---------------------------
 #cursor.execute("CREATE TABLE conta (agencia text, numero text, saldo real, gerente text, titular text)")
 # ---------------------------- COMANDO CRIAÇÃO COLUNA CONTA FORMATO DE TEXTO ---------------------------
-#cursor.execute("ALTER TABLE pessoas ADD COLUMN conta text")
-
+#cursor.execute("ALTER TABLE pessoas ADD COLUMN conta text"
+# ---------------------------- COMANDO DELETA OS DADOS DO BANCO ---------------------------
+#cursor.execute("DELETE FROM pessoas")
+#cursor.execute("DELETE FROM conta")
 #banco.commit()
 try:
 
@@ -28,7 +30,9 @@ try:
         #newNomes = open('nomes2.txt', 'w')
         #newNomes.write(saida)
         for i in entrada:
-                cursor.execute("INSERT INTO pessoas VALUES ('" + i.split()[0] + "', '" + i.split()[1] + "', '" + i.split()[2] + "', '" + i.split()[3] + "', " + i.split()[4] + ", '" + i.split()[5] + "')")
+                dados = i.split()
+                cpf, primeiro_nome, nome_do_meio, sobrenome, idade, conta = dados
+                cursor.execute("INSERT INTO pessoas VALUES (?, ?, ?, ?, ?, ?)", (dados))
             
                 print(i.split()[0] + ' ' + i.split()[1] + ' ' + i.split()[2] + ' ' + i.split()[3] + ' ' + i.split()[4] + ' ' + i.split()[5])
                 banco.commit()
@@ -46,7 +50,9 @@ try:
         #newNomes = open('nomes2.txt', 'w')
         #newNomes.write(saida)
         for i in entrada2:
-                cursor.execute("INSERT INTO conta VALUES ('" + i.split()[0] + "', '" + i.split()[1] + "', '" + i.split()[2] + "', " + i.split()[3] + ", '" + i.split()[4] + "')")
+                dados = i.split()
+                agencia, numero, saldo, gerente, titular = dados
+                cursor.execute("INSERT INTO conta VALUES (?, ?, ?, ?, ?)", (dados))
             
                 print(i.split()[0] + ' ' + i.split()[1] + ' ' + i.split()[2] + ' ' + i.split()[3] + ' ' + i.split()[4] )
                 banco.commit()
