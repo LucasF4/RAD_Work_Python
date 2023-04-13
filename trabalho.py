@@ -7,10 +7,11 @@ cursor = banco.cursor()
 
 # ---------------------------- COMANDO PARA DELETAR TABELA ---------------------------
 #cursor.execute("DROP TABLE pessoas")
+#cursor.execute("DROP TABLE conta")
 # ---------------------------- COMANDO DE CRIAÇÃO DA TABELA PESSOAS ---------------------------
 #cursor.execute("CREATE TABLE pessoas (cpf text, primeiro_nome text, nome_do_meio text, sobrenome text, idade integer, conta text) ")
 # ---------------------------- COMANDO DE CRIAÇÃO DA TABELA CONTA ---------------------------
-#cursor.execute("CREATE TABLE conta (agencia integer, numero integer, saldo text, gerente text, titular text)")
+#cursor.execute("CREATE TABLE conta (agencia text, numero text, saldo real, gerente text, titular text)")
 # ---------------------------- COMANDO CRIAÇÃO COLUNA CONTA FORMATO DE TEXTO ---------------------------
 #cursor.execute("ALTER TABLE pessoas ADD COLUMN conta text")
 
@@ -35,6 +36,23 @@ try:
         nomes.close()
         #newNomes.close()
 
+    numContas = cursor.execute("SELECT COUNT(*) FROM conta")
+    objContas = numPessoas.fetchone()
+    print(objContas[0])
+    if objContas[0] == 0:
+        contas = open('contas.txt','r')
+        entrada2 = contas.readlines()
+        #saida = entrada.replace(' ', ',')
+        #newNomes = open('nomes2.txt', 'w')
+        #newNomes.write(saida)
+        for i in entrada2:
+                cursor.execute("INSERT INTO conta VALUES ('" + i.split()[0] + "', '" + i.split()[1] + "', '" + i.split()[2] + "', " + i.split()[3] + ", '" + i.split()[4] + "')")
+            
+                print(i.split()[0] + ' ' + i.split()[1] + ' ' + i.split()[2] + ' ' + i.split()[3] + ' ' + i.split()[4] )
+                banco.commit()
+
+        contas.close()
+
 
 except NameError as error:
     print("Ocorreu um erro: " + NameError)
@@ -45,7 +63,7 @@ locale.setlocale(locale.LC_ALL, 'Portuguese')
 a = 1
 while a == 1:
     print('=============================')
-    selecionado = str(input("[1] - Pessoas | [2] - Contas | [5] - Sair\n"))
+    selecionado = str(input("[1] - Pessoas | [2] - Sair\n"))
 
     if selecionado == '1':
         os.system('cls')
@@ -115,15 +133,6 @@ while a == 1:
                 print("Usuário Deletado com sucesso.")
 
     if selecionado == '2':
-        arquivo = open("nomes.txt", "r")
-        lista = arquivo.readlines()
-        
-        for l in lista:
-            print(l)
-
-        arquivo.close()
-
-    if selecionado == '5':
         a = 2
 
 #banco.commit()
