@@ -68,6 +68,55 @@ locale.setlocale(locale.LC_ALL, 'Portuguese')
 
 a = 1
 while a == 1:
+
+    def switch(choice):
+        if choice == '1':
+            nome = str(input("Informe o nome da pessoa que você deseja buscar os dados: "))
+            selectUserName(nome)
+        elif choice == '2':
+            os.system("cls")
+            print("=========================================\n")
+            print("Exemplo da busca:\nBusque as pessoas com a idade de: 50 até 70\n\n")
+            idadeInit = str(input("Busque as pessoas com a idade de: "))
+            idadeEnd = str(input("Até: "))
+            selectuserIdade(idadeInit, idadeEnd)
+    
+
+    def selectUserName(nome):
+        os.system("cls")
+        print(nome)
+        clientes = cursor.execute("SELECT * FROM pessoas WHERE primeiro_nome = '" + nome + "'" )
+        clientObj = clientes.fetchall()
+        arquivo = open('nome.txt', 'w')
+        for i in clientObj:
+            arquivo.write('==========================\n')
+            arquivo.write('CPF: ' + str(i[0])+'\n')
+            arquivo.write('Nome: ' + i[1]+'\n')
+            arquivo.write('Segundo Nome: ' + i[2]+'\n')
+            arquivo.write('Sobrenome: ' + i[3]+'\n')
+            arquivo.write('Idade: ' + str(i[4])+'\n')
+            arquivo.write('Conta: ' + str(i[5])+'\n')
+        arquivo.close()
+        print("Arquivo Gerado!")
+
+    def selectuserIdade(idadeInit, idadeEnd):
+        os.system("cls")
+        clientes = cursor.execute("SELECT * FROM pessoas WHERE idade > '" + idadeInit + "' AND idade < " + idadeEnd )
+        clientObj = clientes.fetchall()
+        arquivo = open('idade.txt', 'w')
+        for i in clientObj:
+            arquivo.write('==========================\n')
+            arquivo.write('CPF: ' + str(i[0])+'\n')
+            arquivo.write('Nome: ' + i[1]+'\n')
+            arquivo.write('Segundo Nome: ' + i[2]+'\n')
+            arquivo.write('Sobrenome: ' + i[3]+'\n')
+            arquivo.write('Idade: ' + str(i[4])+'\n')
+            arquivo.write('Conta: ' + str(i[5])+'\n')
+        arquivo.close()
+        print("Arquivo Gerado!")
+        print(idadeInit + ' ' + idadeEnd)
+
+
     print('=============================')
     selecionado = str(input("[1] - Pessoas | [2] - Sair\n"))
 
@@ -75,21 +124,12 @@ while a == 1:
         os.system('cls')
         opcao = str(input('[1] - Listar Pessoas | [2] - Cadastrar Pessoas | [3] - Editar Pessoas | [4] - Deletar Pessoas\n'))
 
+        # ---------------------------------------- MENU DE PESSOAS -----------------------------------------
         if opcao == '1':
-            os.system("cls")
-            clientes = cursor.execute("SELECT * FROM pessoas")
-            clientObj = clientes.fetchall()
-            arquivo = open('pessoas.txt', 'w')
-            for i in clientObj:
-                arquivo.write('==========================\n')
-                arquivo.write('CPF: ' + str(i[0])+'\n')
-                arquivo.write('Nome: ' + i[1]+'\n')
-                arquivo.write('Segundo Nome: ' + i[2]+'\n')
-                arquivo.write('Sobrenome: ' + i[3]+'\n')
-                arquivo.write('Idade: ' + str(i[4])+'\n')
-                arquivo.write('Conta: ' + str(i[5])+'\n')
-            arquivo.close()
-            print("Arquivo Gerado!")
+            os.system('cls')
+            # ------------------------------------ MENU DE LISTAR PESSOAS ----------------------------------------
+            choice = str(input('[1] - Buscar por Nome | [2] - Busca por Idade'))
+            switch(choice)
 
         if opcao == '2':
             os.system("cls")
