@@ -80,13 +80,18 @@ while a == 1:
             idadeInit = str(input("Busque as pessoas com a idade de: "))
             idadeEnd = str(input("Até: "))
             selectuserIdade(idadeInit, idadeEnd)
+        elif choice == '3':
+            os.system("cls")
+            print("=========================================\n")
+            
     
 
     def selectUserName(nome):
         os.system("cls")
-        print(nome)
         clientes = cursor.execute("SELECT * FROM pessoas WHERE primeiro_nome = '" + nome + "'" )
         clientObj = clientes.fetchall()
+        if clientObj == []:
+            return print("Não há pessoas cadastradas com o nome de "+nome)
         arquivo = open('nome.txt', 'w')
         for i in clientObj:
             arquivo.write('==========================\n')
@@ -115,6 +120,9 @@ while a == 1:
         arquivo.close()
         print("Arquivo Gerado!")
         print(idadeInit + ' ' + idadeEnd)
+    
+    def selectuserSaldo():
+        os.system("cls")
 
 
     print('=============================')
@@ -136,6 +144,7 @@ while a == 1:
             primeiro = str(input("Primeiro Nome: "))
             segundo = str(input("Segundo Nome: "))
             sobrenome =str(input("SobreNome: "))
+            print("Obs.: O CPF deverá ser digitado de forma formatada (Ex.: 000.000.000-00)\n\n")
             cpf = str(input("CPF: "))
             idade = str(input("Idade: "))
             conta = str(input("Conta: "))
@@ -148,8 +157,9 @@ while a == 1:
         
         if opcao == '3':
             os.system("cls")
+            print("Obs.: O CPF deverá ser digitado de forma formatada (Ex.: 000.000.000-00)\n\n")
             whereCPF = str(input("Qual o CPF da pessoa que você deseja editar as informações?\n"))
-            select = cursor.execute("SELECT * FROM pessoas WHERE cpf = "+whereCPF)
+            select = cursor.execute("SELECT * FROM pessoas WHERE cpf = '"+whereCPF+"'")
             selectObj = select.fetchone()
             if selectObj == None:
                 print('Nenhuma pessoa cadastrada com esse CPF')
@@ -162,19 +172,20 @@ while a == 1:
                 idade = str(input("Idade: "))
                 conta = str(input("Conta: "))
                 try:
-                    cursor.execute("UPDATE pessoas SET primeiro_nome = '"+primeiro+"', nome_do_meio = '"+segundo+"', sobrenome = '"+sobrenome+"', idade = "+idade+", cpf = "+cpf+", conta = '"+conta+"' ")
+                    cursor.execute("UPDATE pessoas SET primeiro_nome = '"+primeiro+"', nome_do_meio = '"+segundo+"', sobrenome = '"+sobrenome+"', idade = "+idade+", cpf = '"+cpf+"', conta = '"+conta+"' WHERE cpf = '" + cpf + "'")
                     banco.commit()
                 except NameError as error:
                     print('Problemas na atualização no cadastro', error)
         if opcao == '4':
             os.system("cls")
+            print("Obs.: O CPF deverá ser digitado de forma formatada (Ex.: 000.000.000-00)\n\n")
             whereCPF = str(input("Qual o CPF da pessoa que você deseja deletar as informações?\n"))
-            select = cursor.execute("SELECT * FROM pessoas WHERE cpf = "+whereCPF)
+            select = cursor.execute("SELECT * FROM pessoas WHERE cpf = '"+whereCPF+"'")
             selectObj = select.fetchone()
             if selectObj == None:
                 print('Nenhuma pessoa cadastrada com esse CPF')
             else:
-                cursor.execute("DELETE FROM pessoas WHERE cpf = " + whereCPF)
+                cursor.execute("DELETE FROM pessoas WHERE cpf = '" + whereCPF + "'")
                 banco.commit()
                 print("Usuário Deletado com sucesso.")
 
