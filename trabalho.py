@@ -219,7 +219,7 @@ while a == 1:
                 idade = str(input("Idade: "))
                 conta = str(input("Conta: "))
                 try:
-                    cursor.execute("UPDATE pessoas SET primeiro_nome = '"+primeiro+"', nome_do_meio = '"+segundo+"', sobrenome = '"+sobrenome+"', idade = "+idade+", cpf = '"+cpf+"', conta = '"+conta+"' WHERE cpf = '" + cpf + "'")
+                    cursor.execute("UPDATE pessoas SET primeiro_nome = '"+primeiro+"', nome_do_meio = '"+segundo+"', sobrenome = '"+sobrenome+"', idade = "+idade+", cpf = '"+cpf+"', conta = '"+conta+"' WHERE cpf = '" + whereCPF + "'")
                     banco.commit()
                 except NameError as error:
                     print('Problemas na atualização no cadastro', error)
