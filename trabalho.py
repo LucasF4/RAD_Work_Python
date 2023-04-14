@@ -1,3 +1,23 @@
+"""
+
+  -------------------------------- Representantes --------------------------------
+
+  Nome: Lucas Mateus da Silva Félix
+  Matrícula: 202001383531
+
+  Nome: Pedro Virgilio Sousa Silva
+  Matrícula: 202002273429
+
+  Nome: Alexandre Estevan De Carvalho Araujo
+  Matrícula: 202002832797
+
+  Nome: Vitor Emmanuel Lima dos Santos Gomes de Abreu
+  Matrícula: 202002548681
+
+  --------------------------------------------------------------------------------
+
+"""
+
 import sqlite3
 import os
 import locale
@@ -26,7 +46,7 @@ try:
     if objPessoas[0] == 0:
         nomes = open('nomes.txt','r')
         entrada = nomes.readlines()
-        #saida = entrada.replace(' ', ',')
+        #saida = entrada.replace('', ',')
         #newNomes = open('nomes2.txt', 'w')
         #newNomes.write(saida)
         for i in entrada:
@@ -46,8 +66,8 @@ try:
     if objContas[0] == 0:
         contas = open('contas.txt','r')
         entrada2 = contas.readlines()
-        #saida = entrada.replace(' ', ',')
-        #newNomes = open('nomes2.txt', 'w')
+        #saida = entrada.replace('', ',')
+        #newNomes = open('contas2.txt', 'w')
         #newNomes.write(saida)
         for i in entrada2:
                 dados = i.split()
@@ -57,11 +77,12 @@ try:
                 print(i.split()[0] + ' ' + i.split()[1] + ' ' + i.split()[2] + ' ' + i.split()[3] + ' ' + i.split()[4] )
                 banco.commit()
 
+        #newNomes.closes()
         contas.close()
 
 
 except NameError as error:
-    print("Ocorreu um erro: " + NameError)
+    print("Ocorreu um erro: " + error)
 
 
 locale.setlocale(locale.LC_ALL, 'Portuguese')
@@ -83,7 +104,9 @@ while a == 1:
         elif choice == '3':
             os.system("cls")
             print("=========================================\n")
-            
+            valor1 = str(input('Digite o primeiro valor: '))
+            valor2 = str(input('Digite o segundo valor: '))
+            selectuserSaldo(valor1, valor2)
     
 
     def selectUserName(nome):
@@ -106,7 +129,7 @@ while a == 1:
 
     def selectuserIdade(idadeInit, idadeEnd):
         os.system("cls")
-        clientes = cursor.execute("SELECT * FROM pessoas WHERE idade > '" + idadeInit + "' AND idade < " + idadeEnd )
+        clientes = cursor.execute("SELECT * FROM pessoas WHERE idade BETWEEN " + idadeInit + " AND " + idadeEnd )
         clientObj = clientes.fetchall()
         arquivo = open('idade.txt', 'w')
         for i in clientObj:
@@ -121,12 +144,28 @@ while a == 1:
         print("Arquivo Gerado!")
         print(idadeInit + ' ' + idadeEnd)
     
-    def selectuserSaldo():
+    def selectuserSaldo(valor1, valor2):
         os.system("cls")
+        clientes = cursor.execute("SELECT cpf, primeiro_nome, nome_do_meio, sobrenome, idade, conta, saldo FROM pessoas p INNER JOIN conta c ON p.conta = c.titular WHERE saldo BETWEEN " + valor1 +" AND " + valor2)
+        clienteObj = clientes.fetchall()
+        if clienteObj == []:
+            return print("Nenhum usuário encontrado com esse saldo")
+        arquivo = open('saldo.txt', 'w')
+        for i in clienteObj:
+            arquivo.write('==========================\n')
+            arquivo.write('CPF: ' + str(i[0])+'\n')
+            arquivo.write('Nome: ' + i[1]+'\n')
+            arquivo.write('Segundo Nome: ' + i[2]+'\n')
+            arquivo.write('Sobrenome: ' + i[3]+'\n')
+            arquivo.write('Idade: ' + str(i[4])+'\n')
+            arquivo.write('Conta: ' + str(i[5])+'\n\n')
+            arquivo.write('SALDO: ' + str(i[6])+'\n\n')
+        arquivo.close()
+        print("Arquivo Gerado!")
 
 
     print('=============================')
-    selecionado = str(input("[1] - Pessoas | [2] - Sair\n"))
+    selecionado = str(input("[1] - Pessoas | [2] - Remover Espaço e Adicionar Vírgula | [3] - Sair\n"))
 
     if selecionado == '1':
         os.system('cls')
@@ -136,7 +175,7 @@ while a == 1:
         if opcao == '1':
             os.system('cls')
             # ------------------------------------ MENU DE LISTAR PESSOAS ----------------------------------------
-            choice = str(input('[1] - Buscar por Nome | [2] - Busca por Idade'))
+            choice = str(input('[1] - Buscar por Nome | [2] - Busca por Idade | [3] - Buscar por Saldo\n'))
             switch(choice)
 
         if opcao == '2':
@@ -148,8 +187,13 @@ while a == 1:
             cpf = str(input("CPF: "))
             idade = str(input("Idade: "))
             conta = str(input("Conta: "))
+            agencia = str(input("Agencia: "))
+            numero = str(input("Numero: "))
+            saldo = str(input("Saldo: "))
+            gerente = str(input("Gerente: "))
             try:
                 cursor.execute("INSERT INTO pessoas VALUES ('"+cpf+"', '"+primeiro+"', '"+segundo+"', '"+sobrenome+"', "+idade+", '"+conta+"')")
+                cursor.execute("INSERT INTO conta VALUES ('"+agencia+"', '"+numero+"', "+saldo+", '"+gerente+"', '"+conta+"')")
                 print("Inserido")
                 banco.commit()
             except:
@@ -186,10 +230,27 @@ while a == 1:
                 print('Nenhuma pessoa cadastrada com esse CPF')
             else:
                 cursor.execute("DELETE FROM pessoas WHERE cpf = '" + whereCPF + "'")
+                cursor.execute("DELETE FROM conta WHERE titular = '" + selectObj[5] + "'")
                 banco.commit()
                 print("Usuário Deletado com sucesso.")
 
     if selecionado == '2':
+        arquivo = open("nomes.txt", "r+")
+        lerArquivo = arquivo.read()
+        saida = lerArquivo.replace(" ", ",")
+        arquivo2 = open("nomes.txt", "w")
+        arquivo2.write(saida)
+
+        arquivo.close()
+        arquivo2.close()
+
+        arquivo = open("contas.txt", "r+")
+        lerArquivo = arquivo.read()
+        saida = lerArquivo.replace(" ", ",")
+        arquivo2 = open("contas.txt", "w")
+        arquivo2.write(saida)
+
+    if selecionado == '3':
         a = 2
 
 #banco.commit()
